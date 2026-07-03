@@ -12,6 +12,11 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  static const String demoEmail = 'alex@company.com';
+  static const String demoPassword = '1234';
+  static const String demoName = 'Alex';
+  static const String demoToken = 'demo_token';
+
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -36,9 +41,9 @@ class _AuthScreenState extends State<AuthScreen> {
       return;
     }
 
-    if (password.length < 4) {
+    if (password.length < 8 && !_isDemoCredentials()) {
       setState(() {
-        errorMessage = 'Password must be at least 4 characters long.';
+        errorMessage = 'Password must be at least 8 characters long.';
       });
       return;
     }
@@ -55,6 +60,11 @@ class _AuthScreenState extends State<AuthScreen> {
     });
 
     try {
+      if (!isRegisterMode && _isDemoCredentials()) {
+        await _loginDemo();
+        return;
+      }
+
       final response = isRegisterMode
           ? await ApiService.register(fullName, email, password)
           : await ApiService.login(email, password);
@@ -80,6 +90,16 @@ class _AuthScreenState extends State<AuthScreen> {
         });
       }
     }
+  }
+
+  bool _isDemoCredentials() {
+    return emailController.text.trim() == demoEmail &&
+        passwordController.text == demoPassword;
+  }
+
+  Future<void> _loginDemo() async {
+    await SecureStorageService().saveLogin(demoName, demoToken);
+    widget.onLogin(demoName);
   }
 
   void _toggleMode() {
@@ -265,13 +285,34 @@ class _AuthScreenState extends State<AuthScreen> {
                       Center(
                         child: TextButton(
                           onPressed: () {
-                            emailController.text = 'alex@company.com';
-                            passwordController.text = '1234';
+                            emailController.text = demoEmail;
+                            passwordController.text = demoPassword;
                           },
                           child: const Text('Use demo credentials'),
                         ),
                       ),
                     ],
+                    const SizedBox(height: 8),
+                    if (!isRegisterMode)
+                      Center(
+                        child: TextButton(
+                          onPressed: () async {
+                            setState(() {
+                              isLoading = true;
+                              errorMessage = null;
+                            });
+
+                            await _loginDemo();
+
+                            if (mounted) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          },
+                          child: const Text('Login with demo account'),
+                        ),
+                      ),
                   ],
                 ),
               ),

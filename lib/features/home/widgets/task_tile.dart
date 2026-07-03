@@ -18,8 +18,8 @@ class TaskCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          const BoxShadow(
+        boxShadow: const [
+          BoxShadow(
             color: Color.fromRGBO(0, 0, 0, 0.05),
             blurRadius: 10,
             offset: Offset(0, 5),

@@ -1,12 +1,18 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../data/models/task_model.dart';
 import 'secure_storage_service.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://127.0.0.1:8000/api';
+  static String get baseUrl {
+    if (Platform.isAndroid) {
+      // Use your PC IP address on a real Android device.
+      return 'http://172.20.10.4:8000/api';
+    }
+    return 'http://127.0.0.1:8000/api';
+  }
 
   static Future<Map<String, String>> _headers({String? token}) async {
     final headers = <String, String>{

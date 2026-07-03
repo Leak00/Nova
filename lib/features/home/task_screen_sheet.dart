@@ -63,7 +63,7 @@ void showTaskBottomSheet(
                 ),
                 const SizedBox(height: 15),
                 DropdownButtonFormField<String>(
-                  value: selectedCategory,
+                  initialValue: selectedCategory,
                   items: categories
                       .map(
                         (category) => DropdownMenuItem(

@@ -106,10 +106,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: events.isEmpty
-              ? Center(
+              ? const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(Icons.history, size: 80, color: Colors.grey),
                       SizedBox(height: 16),
                       Text(
